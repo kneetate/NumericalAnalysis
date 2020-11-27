@@ -34,9 +34,11 @@ void ModifiedEuler(double& Xt,double dt, double input, double _a, double _b)
 
 void RungeKutta4(double& Xt, double dt, double input, double a, double b)
 {
-    double Xth = 0;
     double k1 = a * Xt + b * input;
-    double k2 = a * Xth;
+    double k2 = a * (Xt + k1 / 2) + b * input;
+    double k3 = a * (Xt + k2 / 2) + b * input;
+    double k4 = a * (Xt + k3) + b * input;
+    Xt += dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
 }
 
 
@@ -45,38 +47,48 @@ int main()
 {
     double a = 0.001;
     double b = 0.003;
-    double dt = 0.1;
-    double input = 3;
+    double dt = 1.0;
+    double input = 0;
+    double input0 = 3;
+    double input1 = 3;
+    double input2 = 3;
+    double input3 = 3;
     double aX1 = 0;
     double aX = 0;
     double adX = 0;
     double bX1 = 0;
     double bX = 0;
     double cX = 0;
+
     int i = 0;
 
     while (1) {
-        Euler(aX1, aX, adX, dt, input, a, b);
+        RungeKutta4(aX, dt, input, a, b);
         Euler(bX, dt, input, a, b);
         ModifiedEuler(cX, dt, input, a, b);
-        cout << i << " , " << aX << " , " << bX << " , " << cX << endl;
+        cout << i << " , "<<input<<" , " << aX << " , " << bX << " , " << cX << endl;
         i++;
-        if (i >0&&i<100)
+        if (i > 0)
         {
-            input = 3;
+            input = input0;;
+                if (i > 100)
+                {
+                    input = input1;
+                    if (i > 200)
+                    {
+                        input = input2;
+                        if (i > 300)
+                        {
+                            input = input3;
+                            if (i == 400)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
         }
-        if (i >= 100 & i < 200)
-        {
-            input = 6;
-        }
-        if (i >= 200 && i < 300)
-        {
-            input = 9;
-        }
-        if (i == 300)
-        {
-            break;
-        }
+    
     }
 
 }
